@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+body {
+  @apply font-sans bg-amber-50;
+}
+
+h1, h2, h3 {
+  @apply font-display;
+}
+
+/* Kyrgyz Ornament Pattern */
+.kyrgyz-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l10 20h20L40 30l10 20-20-10-20 10 10-20L0 30l20-10L30 0z' fill='%2392400e' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
