@@ -34,17 +34,29 @@ export default function App() {
   useEffect(() => {
     if (!audioRef.current) return;
     
-    if (status === 'playing' && !isMuted) {
+    if (!isMuted && status === 'playing') {
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(e => {
-          console.log("Autoplay blocked. User must interact first.", e);
+          console.log("Autoplay blocked. Waiting for interaction.", e);
         });
       }
     } else {
       audioRef.current.pause();
     }
-  }, [status, isMuted]);
+  }, [isMuted, status]);
+
+  const toggleMute = () => {
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    if (audioRef.current) {
+      if (!newMuted && status === 'playing') {
+        audioRef.current.play().catch(e => console.log("Manual play failed:", e));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  };
 
   // Sound effects
   const playSound = useCallback((type: 'correct' | 'wrong' | 'win' | 'click') => {
@@ -58,14 +70,14 @@ export default function App() {
     };
 
     const audio = new Audio(sounds[type]);
-    audio.volume = 0.5;
+    audio.volume = 0.4;
     audio.play().catch(e => console.log("SFX play failed:", e));
   }, [isMuted]);
 
   const startNewGame = (names: string[], diff: Difficulty) => {
-    // Explicitly play on user interaction
+    // Ensure music is playing
     if (audioRef.current && !isMuted) {
-      audioRef.current.play().catch(e => console.log("Play on click failed:", e));
+      audioRef.current.play().catch(e => console.log("Start game play failed:", e));
     }
     
     const initialPlayers = names.map((name, i) => ({
@@ -150,57 +162,66 @@ export default function App() {
   }, [status, isAnswered, timeLeft, handleAnswer]);
 
   return (
-    <div className="min-h-screen bg-amber-50 font-sans text-gray-900 selection:bg-amber-200">
-      {/* Background Pattern (Kyrgyz Ornament Style) */}
-      <div className="fixed inset-0 opacity-5 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900 via-transparent to-transparent bg-[length:100px_100px]" />
-        <div className="absolute bottom-0 left-0 w-full h-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900 via-transparent to-transparent bg-[length:100px_100px]" />
-      </div>
+    <div className="min-h-screen bg-ethno-cream font-sans text-ethno-brown selection:bg-ethno-gold/30 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 opacity-5 pointer-events-none kyrgyz-pattern" />
+      
+      {/* Decorative Corners */}
+      <div className="fixed top-0 left-0 w-32 h-32 border-t-8 border-l-8 border-ethno-gold/20 rounded-tl-[3rem] pointer-events-none" />
+      <div className="fixed top-0 right-0 w-32 h-32 border-t-8 border-r-8 border-ethno-gold/20 rounded-tr-[3rem] pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-32 h-32 border-b-8 border-l-8 border-ethno-gold/20 rounded-bl-[3rem] pointer-events-none" />
+      <div className="fixed bottom-0 right-0 w-32 h-32 border-b-8 border-r-8 border-ethno-gold/20 rounded-br-[3rem] pointer-events-none" />
 
       {/* Header */}
-      <header className="relative z-10 p-4 flex justify-between items-center max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="bg-amber-600 p-2 rounded-xl text-white shadow-md">
-            <Music size={20} />
+      <header className="relative z-20 p-6 flex justify-between items-center max-w-7xl mx-auto">
+        <div className="flex items-center gap-4">
+          <div className="bg-ethno-red p-3 rounded-2xl text-white shadow-xl border-2 border-white/20">
+            <Music size={24} />
           </div>
-          <span className="font-black text-amber-900 tracking-tighter text-xl">АТ ЧАБЫШ</span>
+          <div>
+            <h1 className="font-black text-ethno-red tracking-tighter text-3xl leading-none">АТ ЧАБЫШ</h1>
+            <p className="text-[10px] font-bold text-ethno-gold uppercase tracking-[0.2em]">Кыргыз адабияты боюнча интеллектуалдык жарыш</p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {status !== 'start' && (
             <button 
               onClick={() => setStatus('start')}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white shadow-sm hover:shadow-md transition-all text-amber-700 font-bold text-sm"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all text-ethno-red font-black text-sm border-2 border-ethno-cream"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={20} />
               <span>АРТКА</span>
             </button>
           )}
           <button 
             onClick={() => setShowHelp(!showHelp)}
-            className="p-2 rounded-full bg-white shadow-sm hover:shadow-md transition-all text-amber-600"
+            className="p-3 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all text-ethno-gold border-2 border-ethno-cream"
           >
-            <HelpCircle size={24} />
+            <HelpCircle size={28} />
           </button>
           <button 
-            onClick={() => setIsMuted(!isMuted)}
-            className="p-2 rounded-full bg-white shadow-sm hover:shadow-md transition-all text-amber-600"
+            onClick={toggleMute}
+            className="p-3 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all text-ethno-red border-2 border-ethno-cream"
           >
-            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+            {isMuted ? <VolumeX size={28} /> : <Volume2 size={28} />}
           </button>
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+      <main className="relative z-10 container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[calc(100vh-120px)]">
         <AnimatePresence mode="wait">
           {status === 'start' && (
             <motion.div
               key="start"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full flex justify-center"
             >
-              <StartScreen onStart={startNewGame} />
+              <StartScreen 
+                onStart={startNewGame} 
+              />
             </motion.div>
           )}
 
@@ -210,22 +231,35 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="w-full max-w-5xl space-y-8"
+              className="w-full max-w-6xl space-y-12"
             >
               {/* Race Track */}
               <GameScreen players={players} />
 
               {/* Current Player Indicator */}
               <div className="flex justify-center">
-                <div className="bg-white px-6 py-2 rounded-full shadow-md border-2 border-amber-100 flex items-center gap-3">
-                  <div 
-                    className="w-4 h-4 rounded-full animate-pulse" 
-                    style={{ backgroundColor: players[currentPlayerIndex]?.color }}
-                  />
-                  <span className="font-bold text-gray-700">
-                    Кезек: <span className="text-amber-900">{players[currentPlayerIndex]?.name}</span>
-                  </span>
-                </div>
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="bg-white px-10 py-4 rounded-[2rem] shadow-2xl border-4 border-ethno-gold/20 flex items-center gap-6"
+                >
+                  <div className="relative">
+                    <div 
+                      className="w-8 h-8 rounded-full animate-ping absolute inset-0 opacity-40" 
+                      style={{ backgroundColor: players[currentPlayerIndex]?.color }}
+                    />
+                    <div 
+                      className="w-8 h-8 rounded-full relative z-10 border-4 border-white shadow-inner" 
+                      style={{ backgroundColor: players[currentPlayerIndex]?.color }}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-ethno-gold uppercase tracking-widest">Кезектеги тайпа</span>
+                    <span className="text-2xl font-black text-ethno-brown">
+                      {players[currentPlayerIndex]?.name}
+                    </span>
+                  </div>
+                </motion.div>
               </div>
 
               {/* Question Area */}
@@ -244,8 +278,9 @@ export default function App() {
           {status === 'finished' && (
             <motion.div
               key="finished"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full flex justify-center"
             >
               <ResultScreen 
                 players={players} 
@@ -306,7 +341,7 @@ export default function App() {
       {/* Audio Elements */}
       <audio 
         ref={audioRef}
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        src="https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3"
         loop
         hidden
       />

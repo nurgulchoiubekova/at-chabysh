@@ -13,121 +13,144 @@ export default function ResultScreen({ players, onRestart }: ResultScreenProps) 
 
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="max-w-2xl w-full mx-auto bg-white p-10 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-8 border-amber-100 text-center relative overflow-visible"
+      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      className="max-w-3xl w-full mx-auto bg-white rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.3)] border-[12px] border-ethno-gold/30 text-center relative overflow-hidden parchment"
     >
-      {/* Decorative Ornaments */}
-      <div className="absolute top-4 left-4 text-amber-200 opacity-20">🇰🇬</div>
-      <div className="absolute top-4 right-4 text-amber-200 opacity-20">🇰🇬</div>
-
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-        className="inline-block mb-12 relative"
-      >
-        <div className="bg-gradient-to-br from-yellow-300 to-yellow-500 p-8 rounded-full text-white shadow-[0_10px_30px_rgba(234,179,8,0.4)] relative z-10">
-          <Trophy size={100} />
-        </div>
-        
-        {/* Winner Image - Jockey */}
-        <motion.div
-          initial={{ x: 50, opacity: 0, rotate: 20 }}
-          animate={{ x: 0, opacity: 1, rotate: 0 }}
-          transition={{ delay: 0.8, type: 'spring' }}
-          className="absolute -bottom-10 -right-16 z-20"
-        >
-          <div className="relative">
-            <img 
-              src="https://cdn-icons-png.flaticon.com/512/15622/15622258.png" 
-              alt="Winner Jockey" 
-              className="w-40 h-40 drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)]"
-              referrerPolicy="no-referrer"
-            />
-            <motion.div 
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="absolute -top-4 -left-4 bg-red-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg"
-            >
-              №1
-            </motion.div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <div className="space-y-4 mb-12">
-        <motion.h1 
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
-          className="text-6xl font-black text-amber-900 tracking-tighter"
-        >
-          АЗАМАТСЫҢАР!
-        </motion.h1>
-        
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="flex flex-col items-center gap-2"
-        >
-          <p className="text-2xl font-bold text-amber-700">
-            Бүгүнкү жарыштын жеңүүчүсү:
-          </p>
-          <div className="px-8 py-3 bg-amber-900 text-white rounded-2xl text-4xl font-black shadow-xl border-4 border-amber-400 transform -rotate-2">
-            {winner.name}
-          </div>
-        </motion.div>
+      {/* Animated Background Ornaments */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-24 -left-24 w-64 h-64 kyrgyz-pattern opacity-10 rounded-full"
+        />
+        <motion.div 
+          animate={{ rotate: -360 }}
+          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-24 -right-24 w-64 h-64 kyrgyz-pattern opacity-10 rounded-full"
+        />
       </div>
 
-      <div className="space-y-6 mb-12">
-        <h2 className="text-2xl font-black text-gray-400 uppercase tracking-widest flex items-center justify-center gap-3">
-          <Medal className="text-amber-500" />
-          Жалпы жыйынтык
-          <Medal className="text-amber-500" />
-        </h2>
-        
-        <div className="grid gap-3">
-          {sortedPlayers.map((player, index) => (
-            <motion.div 
-              key={player.id}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 1.2 + (index * 0.1) }}
-              className={`flex items-center justify-between p-5 rounded-3xl transition-all ${
-                index === 0 
-                  ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-200 shadow-md scale-105' 
-                  : 'bg-gray-50 border border-gray-100'
-              }`}
+      <div className="relative z-10 p-10 md:p-16">
+        {/* Celebration Header */}
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
+          className="inline-block mb-10 relative"
+        >
+          {/* Sun-like Glow */}
+          <div className="absolute inset-0 bg-ethno-gold blur-3xl opacity-40 animate-pulse" />
+          
+          <div className="bg-gradient-to-br from-ethno-gold to-amber-600 p-10 rounded-full text-white shadow-2xl relative z-10 border-4 border-white/40">
+            <Trophy size={120} />
+          </div>
+          
+          {/* Floating Medals/Stars */}
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-ethno-gold"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ 
+                opacity: [0, 1, 0], 
+                scale: [0, 1.5, 0],
+                x: Math.cos(i * 60 * Math.PI / 180) * 120,
+                y: Math.sin(i * 60 * Math.PI / 180) * 120
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity, 
+                delay: i * 0.5,
+                ease: "easeOut"
+              }}
             >
-              <div className="flex items-center gap-5">
-                <span className={`w-10 h-10 flex items-center justify-center rounded-2xl font-black text-xl ${
-                  index === 0 ? 'bg-yellow-400 text-white shadow-inner' : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {index + 1}
-                </span>
-                <span className="font-black text-2xl text-gray-800">{player.name}</span>
-              </div>
-              <div className="flex flex-col items-end">
-                <span className="font-mono font-black text-2xl text-amber-700">{player.score}</span>
-                <span className="text-xs font-bold text-amber-600/50 uppercase">упай</span>
-              </div>
+              <Medal size={32} />
             </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
 
-      <motion.button
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 1.8 }}
-        onClick={onRestart}
-        className="group w-full py-6 bg-amber-600 hover:bg-amber-700 text-white rounded-[2rem] text-3xl font-black shadow-[0_15px_30px_rgba(217,119,6,0.3)] hover:shadow-[0_20px_40px_rgba(217,119,6,0.4)] transition-all active:scale-95 flex items-center justify-center gap-4"
-      >
-        <RotateCcw size={36} className="group-hover:rotate-[-180deg] transition-transform duration-500" />
-        ЖАҢЫ ЖАРЫШ
-      </motion.button>
+        <div className="space-y-6 mb-12">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, type: 'spring' }}
+          >
+            <h1 className="text-6xl md:text-7xl font-black text-ethno-red tracking-tighter mb-2 italic">
+              КУТТУКТАЙБЫЗ!
+            </h1>
+            <div className="ornament-divider w-64 mx-auto opacity-60" />
+          </motion.div>
+          
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-col items-center gap-4"
+          >
+            <p className="text-2xl font-bold text-ethno-brown/70 uppercase tracking-[0.3em]">
+              ЖЕҢҮҮЧҮ ТАЙПА:
+            </p>
+            <div className="relative group">
+              <div className="absolute inset-0 bg-ethno-red blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="px-12 py-5 bg-ethno-red text-white rounded-[2rem] text-5xl font-black shadow-2xl border-4 border-ethno-gold relative z-10 transform -rotate-1 hover:rotate-0 transition-transform">
+                {winner.name}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Leaderboard */}
+        <div className="space-y-6 mb-12 bg-white/50 p-8 rounded-[2.5rem] border-2 border-ethno-gold/10">
+          <h2 className="text-xl font-black text-ethno-gold uppercase tracking-[0.4em] flex items-center justify-center gap-4">
+            <div className="h-px w-12 bg-ethno-gold/30" />
+            Жыйынтыктар
+            <div className="h-px w-12 bg-ethno-gold/30" />
+          </h2>
+          
+          <div className="grid gap-4">
+            {sortedPlayers.map((player, index) => (
+              <motion.div 
+                key={player.id}
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1.2 + (index * 0.1) }}
+                className={`flex items-center justify-between p-6 rounded-2xl transition-all ${
+                  index === 0 
+                    ? 'bg-ethno-gold/10 border-2 border-ethno-gold/30 shadow-lg scale-105' 
+                    : 'bg-white/80 border border-ethno-cream shadow-sm'
+                }`}
+              >
+                <div className="flex items-center gap-6">
+                  <span className={`w-12 h-12 flex items-center justify-center rounded-xl font-black text-2xl ${
+                    index === 0 ? 'bg-ethno-gold text-white shadow-lg' : 'bg-ethno-cream text-ethno-brown'
+                  }`}>
+                    {index + 1}
+                  </span>
+                  <span className="font-black text-2xl text-ethno-brown">{player.name}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="font-black text-3xl text-ethno-red leading-none">{player.score}</span>
+                  <span className="text-[10px] font-black text-ethno-gold uppercase tracking-widest">упай</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <motion.button
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 1.8 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onRestart}
+          className="group w-full py-6 bg-ethno-brown hover:bg-black text-white rounded-[2rem] text-2xl font-black shadow-2xl transition-all flex items-center justify-center gap-4 border-b-8 border-black/20"
+        >
+          <RotateCcw size={32} className="group-hover:rotate-[-180deg] transition-transform duration-700" />
+          ЖАҢЫ ЖАРЫШТЫ БАШТОО
+        </motion.button>
+      </div>
     </motion.div>
   );
 }
